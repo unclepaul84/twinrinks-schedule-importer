@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP.TwinRinksScheduleImporter", "DP.TwinRinksScheduleImporter.csproj", "{804087BD-EE56-4D35-92F9-4EB1C4A6627F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{69E84073-4E34-434A-BB50-CBE8119447BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{804087BD-EE56-4D35-92F9-4EB1C4A6627F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{804087BD-EE56-4D35-92F9-4EB1C4A6627F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{804087BD-EE56-4D35-92F9-4EB1C4A6627F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E84073-4E34-434A-BB50-CBE8119447BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E84073-4E34-434A-BB50-CBE8119447BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E84073-4E34-434A-BB50-CBE8119447BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E84073-4E34-434A-BB50-CBE8119447BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
