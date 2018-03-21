@@ -2,4 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/DP.TwinRinksScheduleImporter/v15
+/.vs
+/DP.TwinRinksScheduleParser/bin
+/DP.TwinRinksScheduleParser/obj
+/packages
+/DP.Tests/bin/
+/DP.Tests/obj/Debug

@@ -4,6 +4,7 @@ using HtmlAgilityPack;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using DP.TwinRinksScheduleParser;
 
 namespace Tests
 {
@@ -94,57 +95,16 @@ namespace Tests
 
             foreach (var tr in items)
             {
+                var evt = tr.ToEvent();
+
                 Debug.WriteLine(tr);
             }
 
-
-        }
-
-        public class TwinRinksParsedScheduleItem
-        {
-            public string Date { get; set; }
-            public string Day { get; set; }
-            public string Rink { get; set; }
-            public string Start { get; set; }
-            public string End { get; set; }
-            public string Location { get; set; }
-            public string Description { get; set; }
-            public string Home { get; set; }
-            public string Away { get; set; }
-
-            public override string ToString()
-            {
-                return JsonConvert.SerializeObject(this);
-            }
-        }
-
-        public class TwinRinksEvent
-        {
-            public enum TwinRinksEventType : int
-            {
-                Game,
-                Practice
-
-
-            }
-
-            public enum TwinRinksRink : int
-            {
-                Blue,
-                Red,
-                Away
-            }
-            public DateTime EventDate { get; set; }
-            public TwinRinksEventType EventType { get; set; }
-            public TwinRinksRink Rink { get; set; }
             
-            public TimeSpan Start { get; set; }
-            public string End { get; set; }
-            public string Location { get; set; }
-            public string Description { get; set; }
-            public string Home { get; set; }
-            public string Away { get; set; }
-
         }
+
+     
+
+    
     }
 }
