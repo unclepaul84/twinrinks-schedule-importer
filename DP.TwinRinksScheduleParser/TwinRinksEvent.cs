@@ -1,23 +1,34 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DP.TwinRinksScheduleParser
 {
-    public class TwinRinksEvent
-    {
-        public enum TwinRinksEventType : int
-        {
-            Game,
-            Practice
-        }
 
-        public enum TwinRinksRink : int
-        {
-            Blue,
-            Red,
-            Away
-        }
+    public enum TwinRinksEventType : int
+    {
+        Game,
+        Practice
+    }
+
+    public enum TwinRinksRink : int
+    {
+        Blue,
+        Red,
+        Away
+    }
+
+    public enum TwinRinksTeamLevel : int
+    {
+        Mite,
+        Squirt,
+        PeeWee,
+        Bantam,
+
+    }
+    public class TwinRinksEvent
+    { 
         public DateTime EventDate { get; set; }
         public TwinRinksEventType EventType { get; set; }
         public TwinRinksRink Rink { get; set; }
@@ -28,5 +39,9 @@ namespace DP.TwinRinksScheduleParser
         public string HomeTeamName { get; set; }
         public string AwayTeamName { get; set; }
 
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }
