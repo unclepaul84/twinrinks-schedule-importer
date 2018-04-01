@@ -29,7 +29,7 @@ namespace Tests
 
             using (StringWriter sw = new StringWriter(sb))
             {
-                trEvents.FilterTeamEvents(TwinRinksTeamLevel.Squirt, 1).WriteTeamSnapImportFile(sw);
+                trEvents.FilterTeamEvents(TwinRinksTeamLevel.Squirt, 2).WriteTeamSnapImportFile(sw);
 
                 Debug.Write(sb.ToString());
 
