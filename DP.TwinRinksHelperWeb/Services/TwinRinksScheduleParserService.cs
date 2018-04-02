@@ -48,20 +48,26 @@ namespace DP.TwinRinksHelperWeb.Services
 
         public List<string> GetTeamsList()
         {
-            var teamMonikers = Events.GetTeamMonikers();
-
-            List<string> res = new List<string>();
-
-            foreach (var kvp in teamMonikers)
+            return _memoryCache.GetOrCreate("TeamsList", (ce) =>
             {
+                ce.AbsoluteExpiration = DateTimeOffset.Now.AddHours(1);
 
-                foreach (var l in kvp.Value)
+                var teamMonikers = Events.GetTeamMonikers();
+
+                List<string> res = new List<string>();
+
+                foreach (var kvp in teamMonikers)
                 {
-                    res.Add($"{kvp.Key.ToString().ToUpperInvariant()} {l}");
-                }
-            }
 
-            return res;
+                    foreach (var l in kvp.Value)
+                    {
+                        res.Add($"{kvp.Key.ToString().ToUpperInvariant()} {l}");
+                    }
+                }
+
+                return res;
+
+            });  
         }
 
         internal byte[] GetICalFile(string team)
@@ -102,7 +108,7 @@ namespace DP.TwinRinksHelperWeb.Services
         {
             if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(team, out TwinRinksTeamLevel level, out string moniker))
             {
-                return Events.FilterTeamEvents(level, moniker);
+                return Events.FilterTeamEvents(level, moniker).Where(x=>x.EventDate >= DateTime.Today);
             }
 
             return null;

@@ -1,10 +1,10 @@
 ﻿@page
 @model IndexModel
 <p align="center">
-    <img border="0" src="~/images/sharkslogo.gif" width="301" height="156">
+    <img border="0" src="~/images/sharkslogo.gif" width="150" height="75">
 
 </p>
-<div align="center"><h2>Youth Hockey Schedule Helper</h2></div>
+<div align="center"><h3>@(Model.SelectedTeam??"Youth Hockey") Schedule</h3></div>
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <div class="container">
