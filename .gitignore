@@ -14,3 +14,7 @@
 /DP.Tests/obj/Release
 /DP.TwinRinksHelperWeb/bin/Release/netcoreapp2.0
 *.user
+/DP.TwinRinksScheduleImporter/TestResults
+/DP.TwinRinksScheduleImporter/obj/Debug
+/DP.TwinRinksScheduleImporter/.vs/DP.TwinRinksScheduleImporter/v15
+/DP.TwinRinksScheduleImporter/bin/Debug

@@ -70,6 +70,33 @@ namespace DP.TwinRinksScheduleParser
 
         }
 
+        public static IEnumerable<TwinRinksEventConflict> FindConflictsWith(this IEnumerable<TwinRinksEvent> me, IEnumerable<TwinRinksEvent> other, double minEventStartHoursDiff = 1.5)
+        {
+            Dictionary<DateTime, List<TwinRinksEvent>> byDateIndex = new Dictionary<DateTime, List<TwinRinksEvent>>();
+
+            foreach (var evt in other)
+            {
+                if (!byDateIndex.TryGetValue(evt.EventDate, out List<TwinRinksEvent> lst))
+                    lst = byDateIndex[evt.EventDate] = new List<TwinRinksEvent>();
+
+                lst.Add(evt);
+            }
+
+            foreach (var evt in me)
+            {
+                if (byDateIndex.TryGetValue(evt.EventDate, out List<TwinRinksEvent> lst))
+                {
+                    foreach (var candidate in lst)
+                    {
+                        if (Math.Abs((candidate.EventStart - evt.EventStart).TotalHours) < minEventStartHoursDiff)
+                        {
+                            yield return new TwinRinksEventConflict() { FirstEvent = evt, SecondEvent = candidate };
+                        }
+                    }
+
+                }
+            }
+        }
         public static bool TryParseTeamLevelAndMoniker(string selectedTeam, out TwinRinksTeamLevel level, out string moniker)
         {
             level = default(TwinRinksTeamLevel);
@@ -332,5 +359,12 @@ namespace DP.TwinRinksScheduleParser
             return vEvent;
 
         }
+    }
+
+    public class TwinRinksEventConflict
+    {
+
+        public TwinRinksEvent FirstEvent { get; set; }
+        public TwinRinksEvent SecondEvent { get; set; }
     }
 }

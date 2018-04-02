@@ -50,5 +50,26 @@ namespace Tests
 
         }
 
+
+        [TestMethod]
+        [DeploymentItem("Samples\\Schedule.html")]
+        public void TestFindConflicts()
+        {
+            var doc = new HtmlDocument();
+
+            doc.Load("Schedule.html");
+
+            var gamesOnly = doc.ParseTwinRinksEvents().Where(x => x.EventType == TwinRinksEventType.Game).ToArray();
+          
+          var s1 = gamesOnly.FilterTeamEvents(TwinRinksTeamLevel.Squirt, 1);
+
+          var s2 = gamesOnly.FilterTeamEvents(TwinRinksTeamLevel.Squirt, 2);
+
+          var conflicts =  s1.FindConflictsWith(s2).ToArray();
+
+            Console.WriteLine(JsonConvert.SerializeObject(conflicts));
+
+        }
+
     }
 }

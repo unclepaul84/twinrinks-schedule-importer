@@ -41,6 +41,30 @@ namespace DP.TwinRinksHelperWeb.Services
         {
             this._memoryCache = memoryCache;
         }
+
+        internal IEnumerable<TwinRinksEventConflict> GetGameConficts(string selectedTeam1, string selectedTeam2)
+        {
+            if (!string.IsNullOrWhiteSpace(selectedTeam1) && !string.IsNullOrWhiteSpace(selectedTeam2))
+            {
+                if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(selectedTeam1, out TwinRinksTeamLevel level1, out string moniker1))
+                {
+                    if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(selectedTeam2, out TwinRinksTeamLevel level2, out string moniker2))
+                    {
+
+                        var games = this.Events.Where(e => e.EventType == TwinRinksEventType.Game).ToArray();
+
+                        var team1Games = games.FilterTeamEvents(level1, moniker1);
+                        var team2Games = games.FilterTeamEvents(level2, moniker2);
+
+                        return team1Games.FindConflictsWith(team2Games);
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
         private string DownloadSchedulePageContent()
         {
             return new WebClient().DownloadString(ScheduleUrl);
