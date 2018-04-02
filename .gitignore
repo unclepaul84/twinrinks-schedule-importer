@@ -11,3 +11,6 @@
 /DP.TwinRinksHelperWeb/obj
 /TestResults
 /DP.TwinRinksHelperWeb/bin/Debug/netcoreapp2.0
+/DP.Tests/obj/Release
+/DP.TwinRinksHelperWeb/bin/Release/netcoreapp2.0
+*.user
