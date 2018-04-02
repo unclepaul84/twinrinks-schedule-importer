@@ -9,3 +9,5 @@
 /DP.Tests/bin/
 /DP.Tests/obj/Debug
 /DP.TwinRinksHelperWeb/obj
+/TestResults
+/DP.TwinRinksHelperWeb/bin/Debug/netcoreapp2.0

@@ -38,7 +38,17 @@ namespace Tests
         }
 
 
+        [TestMethod]
+        [DeploymentItem("Samples\\Schedule.html")]
+        public void TestParseTeamMonikers()
+        {
+            var doc = new HtmlDocument();
 
+            doc.Load("Schedule.html");
+
+            var monikers = doc.ParseTwinRinksEvents().GetTeamMonikers();
+
+        }
 
     }
 }
