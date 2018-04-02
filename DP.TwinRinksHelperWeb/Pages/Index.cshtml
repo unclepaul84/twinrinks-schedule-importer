@@ -18,8 +18,8 @@
             {
                 <div style="width:200px; margin-top:10px; margin-bottom:10px"><input type="search" class="light-table-filter form-control" data-table="event-table" placeholder="Filter"></div>
 
-                <a href="?handler=exportTeamSnap&team=@HttpContext.Request.Query["SelectedTeam"]"><i class="fas fa-table"></i> TeamSnap File</a> 
-                <a href="?handler=iCalFile&team=@HttpContext.Request.Query["SelectedTeam"]"><i class="fas fa-calendar-alt"></i> ICal File</a>
+                <a href="?handler=exportTeamSnap&team=@Model.SelectedTeam"><i class="fas fa-table"></i> TeamSnap File </a> 
+                <a href="?handler=iCalFile&team=@Model.SelectedTeam" style="padding-left:10px"><i class="fas fa-calendar-alt"></i> ICal File</a>
 
                 <table class="table table-hover event-table">
                     <thead>

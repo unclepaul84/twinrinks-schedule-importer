@@ -276,7 +276,10 @@ namespace DP.TwinRinksScheduleParser
         public static string WriteICalFileString(this IEnumerable<TwinRinksEvent> me, string title)
         {
             var calendar = new Calendar();
-            
+
+            calendar.AddProperty("X-WR-CALNAME", title);
+
+
             foreach (var e in me)
             {
                 calendar.Events.Add(BuildCalendarEvent(e));
@@ -292,7 +295,7 @@ namespace DP.TwinRinksScheduleParser
         {
             var vEvent = new CalendarEvent();
 
-            vEvent.Location = "Twin Rinks";
+            vEvent.Location = $"Twin Rinks - {evt.Rink} Rink";
             vEvent.Created = new CalDateTime(DateTime.Now);
             vEvent.Class = "PUBLIC";
 
