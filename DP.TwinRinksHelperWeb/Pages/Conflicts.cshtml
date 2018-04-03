@@ -4,6 +4,20 @@
 
     ViewBag.Title = "Twin Rinks Game Conflicts Finder";
 }
+
+@section Head {
+    <style>
+        .game1 {
+            background-color:coral;
+        }
+
+        .game2 {
+            background-color: lightblue;
+        }
+
+      
+    </style>
+}
 <p align="center">
     <img border="0" src="~/images/sharkslogo.gif" width="150" height="75">
 </p>
@@ -12,7 +26,7 @@
     <div class="form-actions no-color">
         <div class="container">
             @Html.DropDownListFor(m => m.SelectedTeam1, Model.Teams, new { onchange = "this.form.submit();" })
-            
+
             @Html.DropDownListFor(m => m.SelectedTeam2, Model.Teams, new { onchange = "this.form.submit();" })
 
             @if (Model.ConflictingGames != null)
@@ -37,18 +51,18 @@
 
                         @foreach (var e in Model.ConflictingGames)
                         {
-                        <tr>
-                            <td>@e.FirstEvent.EventDate.ToString("ddd, MMM dd yyyy")</td>
-                            <td>@DateTime.Today.Add(e.FirstEvent.EventStart).ToString("hh:mm tt")</td>
-                            <td>@e.FirstEvent.HomeTeamName</td>
-                            <td>@e.FirstEvent.AwayTeamName</td>
-                            <td>@e.FirstEvent.Location</td>
+                            <tr>
+                                <td>@e.FirstEvent.EventDate.ToString("ddd, MMM dd yyyy")</td>
+                                <td class="game1">@DateTime.Today.Add(e.FirstEvent.EventStart).ToString("hh:mm tt")</td>
+                                <td class="game1">@e.FirstEvent.HomeTeamName</td>
+                                <td class="game1">@e.FirstEvent.AwayTeamName</td>
+                                <td class="game1">@e.FirstEvent.Location</td>
 
-                            <td>@DateTime.Today.Add(e.SecondEvent.EventStart).ToString("hh:mm tt")</td>
-                            <td>@e.SecondEvent.HomeTeamName</td>
-                            <td>@e.SecondEvent.AwayTeamName</td>
-                            <td>@e.SecondEvent.Location</td>
-                        </tr>
+                                <td class="game2">@DateTime.Today.Add(e.SecondEvent.EventStart).ToString("hh:mm tt")</td>
+                                <td class="game2">@e.SecondEvent.HomeTeamName</td>
+                                <td class="game2">@e.SecondEvent.AwayTeamName</td>
+                                <td class="game2">@e.SecondEvent.Location</td>
+                            </tr>
                         }
 
                     </tbody>
