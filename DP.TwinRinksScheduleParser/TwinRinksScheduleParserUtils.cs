@@ -7,11 +7,109 @@ using Ical.Net.Serialization;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
+using System.Security.Cryptography;
 
 namespace DP.TwinRinksScheduleParser
 {
     public static class TwinRinksScheduleParserUtils
     {
+        public static bool IsDifferentFrom(this TwinRinksEvent me, TwinRinksEvent other, out HashSet<TwinRinksEventField> whichFields)
+        {
+            if (me == null)
+            {
+                throw new ArgumentNullException(nameof(me));
+            }
+
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+
+            bool res = false;
+
+            whichFields = new HashSet<TwinRinksEventField>();
+
+            if(!me.AwayTeamName.Equals(other.AwayTeamName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.AwayTeamName);
+            }
+
+            if (me.EventDate != other.EventDate)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.EventDate);
+            }
+
+
+            if (me.EventDescription != other.EventDescription)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.EventDescription);
+            }
+
+
+            if (me.EventEnd != other.EventEnd)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.EventEnd);
+            }
+
+            if (me.EventStart != other.EventStart)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.EventStart);
+            }
+
+            if (me.EventType != other.EventType)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.EventType);
+            }
+
+            if (!me.HomeTeamName.Equals(other.HomeTeamName))
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.HomeTeamName);
+            }
+
+
+            if (!me.Location.Equals(other.Location))
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.Location);
+            }
+
+
+            if (me.Rink != other.Rink)
+            {
+                res = true;
+
+                whichFields.Add(TwinRinksEventField.Rink);
+            }
+
+            return res;
+        }
+
+
+        public static string GenerateIdentifier(this TwinRinksEvent me)
+        {
+            return Sha1Hash(me.ToString());
+        }
+        static string Sha1Hash(string input)
+        {
+            var hash = (new SHA1Managed()).ComputeHash(Encoding.ASCII.GetBytes(input));
+            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+        }
 
         public static TwinRinksEvent ToEvent(this TwinRinksParsedScheduleItem item)
         {
