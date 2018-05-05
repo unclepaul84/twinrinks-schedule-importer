@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\lib\add-to-homescreen\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DP.TwinRinksScheduleParser\DP.TwinRinksScheduleParser.csproj" />

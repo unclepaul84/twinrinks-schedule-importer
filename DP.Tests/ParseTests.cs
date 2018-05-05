@@ -37,7 +37,6 @@ namespace Tests
 
         }
 
-
         [TestMethod]
         [DeploymentItem("Samples\\Schedule.html")]
         public void TestParseTeamMonikers()
@@ -49,7 +48,6 @@ namespace Tests
             var monikers = doc.ParseTwinRinksEvents().GetTeamMonikers();
 
         }
-
 
         [TestMethod]
         [DeploymentItem("Samples\\Schedule.html")]
@@ -70,7 +68,6 @@ namespace Tests
             Console.WriteLine(JsonConvert.SerializeObject(conflicts));
 
         }
-
 
         [TestMethod]
         public void TestEventJsonRoundTrip()
