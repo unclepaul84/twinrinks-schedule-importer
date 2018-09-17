@@ -8,7 +8,7 @@
     <img border="0" src="~/images/sharkslogo.gif" width="150" height="75">
 
 </p>
-<div align="center"><h3>@(Model.SelectedTeam??"Youth Hockey") Schedule</h3></div>
+<div align="center"><h3>@(Model.SelectedTeam ?? "Youth Hockey") Schedule</h3></div>
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <div class="container">
@@ -18,7 +18,7 @@
             {
                 <div style="width:200px; margin-top:10px; margin-bottom:10px"><input type="search" class="light-table-filter form-control" data-table="event-table" placeholder="Filter"></div>
 
-                <a href="?handler=exportTeamSnap&team=@Model.SelectedTeam"><i class="fas fa-table"></i> TeamSnap File </a> 
+                <a href="?handler=exportTeamSnap&team=@Model.SelectedTeam"><i class="fas fa-table"></i> TeamSnap File </a>
                 <a href="?handler=iCalFile&team=@Model.SelectedTeam" style="padding-left:10px"><i class="fas fa-calendar-alt"></i> ICal File</a>
 
                 <table class="table table-hover event-table">
@@ -41,7 +41,7 @@
                                 @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
                                 {
 
-                                <td> <span class="label label-default">@e.EventType</span> vs @e.AwayTeamName</td>
+                                    <td> <span class="label label-default">@e.EventType</span> vs @e.AwayTeamName</td>
 
                                 }
                                 else
@@ -81,7 +81,15 @@
                                 }
                                 @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Practice)
                                 {
-                                    <td>@e.HomeTeamName @e.AwayTeamName</td>
+                                    @if (e.HomeTeamName == e.AwayTeamName)
+                                    {
+                                        <td>@e.HomeTeamName</td>
+                                    }
+                                    else
+                                    {
+
+                                        <td>@e.HomeTeamName @e.AwayTeamName</td>
+                                    }
                                 }
                                 else
                                 {
@@ -90,7 +98,7 @@
                                 }
                             </tr>
                         }
-                       
+
                     </tbody>
                 </table>
             }
