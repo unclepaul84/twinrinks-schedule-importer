@@ -39,11 +39,12 @@ namespace Tests
 
         [TestMethod]
         [DeploymentItem("Samples\\Schedule.html")]
+        [DeploymentItem("Samples\\Schedule2.html")]
         public void TestParseTeamMonikers()
         {
             var doc = new HtmlDocument();
 
-            doc.Load("Schedule.html");
+            doc.Load("Schedule2.html");
 
             var monikers = doc.ParseTwinRinksEvents().GetTeamMonikers();
 

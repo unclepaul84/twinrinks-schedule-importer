@@ -30,7 +30,7 @@ namespace DP.TwinRinksScheduleParser
 
             whichFields = new HashSet<TwinRinksEventField>();
 
-            if(!me.AwayTeamName.Equals(other.AwayTeamName, StringComparison.InvariantCultureIgnoreCase))
+            if (!me.AwayTeamName.Equals(other.AwayTeamName, StringComparison.InvariantCultureIgnoreCase))
             {
                 res = true;
 
@@ -368,26 +368,24 @@ namespace DP.TwinRinksScheduleParser
         {
             Dictionary<TwinRinksTeamLevel, IReadOnlyList<string>> result = new Dictionary<TwinRinksTeamLevel, IReadOnlyList<string>>();
 
-            var games = events.Where(x => x.EventType == TwinRinksEventType.Game);
-
             foreach (TwinRinksTeamLevel v in Enum.GetValues(typeof(TwinRinksTeamLevel)))
             {
                 HashSet<string> monikers = new HashSet<string>();
 
-                foreach (var g in games)
+                foreach (var e in events)
                 {
-                    var teamLevel = $"{v.ToString().ToUpperInvariant()} ";
-
-                    var teamName = g.HomeTeamName.ToUpperInvariant();
-
-                    if (teamName.StartsWith(teamLevel))
+                    if (e.EventType == TwinRinksEventType.Game)
                     {
-                        var moniker = teamName.Replace(teamLevel, "");
+                        if (TryParseTeamMonikers(v, e.HomeTeamName, out string teamNameResult))
+                            monikers.Add(teamNameResult);
+                    }
+                    else if (e.EventType == TwinRinksEventType.Practice)
+                    {
+                        if (TryParseTeamMonikers(v, e.HomeTeamName, out string teamNameResult))
+                            monikers.Add(teamNameResult);
 
-                        if (!string.IsNullOrWhiteSpace(moniker))
-                        {
-                            monikers.Add(moniker);
-                        }
+                        if (TryParseTeamMonikers(v, e.AwayTeamName, out string teamNameResult2))
+                            monikers.Add(teamNameResult2);
                     }
                 }
 
@@ -397,7 +395,27 @@ namespace DP.TwinRinksScheduleParser
             return result;
         }
 
+        private static bool TryParseTeamMonikers(TwinRinksTeamLevel v, string fullTeamDescription, out string teamNameResult)
+        {
+            var teamName = fullTeamDescription.ToUpperInvariant();
 
+            var teamLevel = $"{v.ToString().ToUpperInvariant()} ";
+
+            if (teamName.StartsWith(teamLevel))
+            {
+                var moniker = teamName.Replace(teamLevel, "");
+
+                if (!string.IsNullOrWhiteSpace(moniker) && !moniker.Equals("POWER", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    teamNameResult = moniker;
+                    return true;
+                }
+            }
+
+            teamNameResult = null;
+
+            return false;
+        }
         public static string WriteICalFileString(this IEnumerable<TwinRinksEvent> me, string title)
         {
             var calendar = new Calendar();

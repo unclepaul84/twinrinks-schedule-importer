@@ -76,6 +76,9 @@
     <Content Include="Samples\Schedule.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Samples\Schedule2.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DP.TwinRinksScheduleParser\DP.TwinRinksScheduleParser.csproj">
