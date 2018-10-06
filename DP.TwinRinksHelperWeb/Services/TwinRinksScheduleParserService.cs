@@ -24,7 +24,7 @@ namespace DP.TwinRinksHelperWeb.Services
             {
                 return _memoryCache.GetOrCreate("Events", (ce) =>
                 {
-                    ce.AbsoluteExpiration = DateTimeOffset.Now.AddHours(1);
+                    ce.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
 
                     var doc = new HtmlDocument();
 

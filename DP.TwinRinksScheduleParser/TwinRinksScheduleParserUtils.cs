@@ -425,7 +425,7 @@ namespace DP.TwinRinksScheduleParser
 
             foreach (var e in me)
             {
-                calendar.Events.Add(BuildCalendarEvent(e));
+                calendar.Events.Add(BuildCalendarEvent(e, title));
             }
 
             var serializer = new CalendarSerializer();
@@ -434,7 +434,7 @@ namespace DP.TwinRinksScheduleParser
 
         }
 
-        private static CalendarEvent BuildCalendarEvent(TwinRinksEvent evt)
+        private static CalendarEvent BuildCalendarEvent(TwinRinksEvent evt, string title)
         {
             var vEvent = new CalendarEvent();
 
@@ -446,22 +446,22 @@ namespace DP.TwinRinksScheduleParser
             {
                 if (evt.Rink == TwinRinksRink.Away)
                 {
-                    vEvent.Summary = $"Away Game vs {evt.AwayTeamName}@{evt.Location}";
+                    vEvent.Summary = $"{title}: Away Game vs {evt.AwayTeamName}@{evt.Location}";
                     vEvent.Location = evt.Location;
                 }
                 else
                 {
-                    vEvent.Summary = $"Home Game vs {evt.AwayTeamName}@{evt.Rink} Rink";
+                    vEvent.Summary = $"{title}: Home Game vs {evt.AwayTeamName}@{evt.Rink} Rink";
                 }
 
             }
             else
             {
                 if (evt.IsPowerSkatingEvent())
-                    vEvent.Summary = $"Power Skating@{evt.Rink} Rink";
+                    vEvent.Summary = $"{title}: Power Skating@{evt.Rink} Rink";
 
                 else
-                    vEvent.Summary = $"Practice@{evt.Rink} Rink";
+                    vEvent.Summary = $"{title}: Practice@{evt.Rink} Rink";
             }
 
             var startDate = evt.EventDate.Add(evt.EventStart);

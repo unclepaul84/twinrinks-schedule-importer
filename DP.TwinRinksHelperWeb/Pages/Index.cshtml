@@ -3,6 +3,12 @@
 @{
 
     ViewBag.Title = (Model.SelectedTeam ?? "Youth Hockey") + " Schedule";
+
+    var selectedTeam = Model.SelectedTeam == null ? "" : Model.SelectedTeam.Replace(" ", "_");
+
+    var icsUrl = System.Net.WebUtility.UrlEncode($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}api/ICS?team={selectedTeam}");
+
+    var googleUrl = $"https://calendar.google.com/calendar/r?cid={icsUrl}";
 }
 <p align="center">
     <img border="0" src="~/images/sharkslogo.gif" width="150" height="75">
@@ -15,93 +21,94 @@
             @Html.DropDownListFor(m => m.SelectedTeam, Model.Teams, new { onchange = "this.form.submit();" })
 
             @if (Model.Events != null)
-            {
-                <div style="width:200px; margin-top:10px; margin-bottom:10px"><input type="search" class="light-table-filter form-control" data-table="event-table" placeholder="Filter"></div>
+    {
+        <div style="width:200px; margin-top:10px; margin-bottom:10px"><input type="search" class="light-table-filter form-control" data-table="event-table" placeholder="Filter"></div>
 
-                <a href="?handler=exportTeamSnap&team=@Model.SelectedTeam"><i class="fas fa-table"></i> TeamSnap File </a>
-                <a href="?handler=iCalFile&team=@Model.SelectedTeam" style="padding-left:10px"><i class="fas fa-calendar-alt"></i> ICal File</a>
+        <a href="?handler=exportTeamSnap&team=@Model.SelectedTeam"><i class="fas fa-table"></i> TeamSnap File </a>
+        <a href="?handler=iCalFile&team=@Model.SelectedTeam" style="padding-left:10px"><i class="fas fa-calendar-alt"></i> ICal File</a>
+        <a target="_blank" href="@googleUrl" style="padding-left:10px"><i class="fas fa-calendar-alt"></i> Add to Google Calendar</a>
+        
+        <table class="table table-hover event-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Event Type</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
 
-                <table class="table table-hover event-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Event Type</th>
-                            <th>Location</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                @foreach (var e in Model.Events)
+        {
+            <tr>
+                <td>@e.EventDate.ToString("ddd, MMM dd yyyy")</td>
+                <td>@DateTime.Today.Add(e.EventStart).ToString("hh:mm tt")</td>
+                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
+        {
 
-                        @foreach (var e in Model.Events)
-                        {
-                            <tr>
-                                <td>@e.EventDate.ToString("ddd, MMM dd yyyy")</td>
-                                <td>@DateTime.Today.Add(e.EventStart).ToString("hh:mm tt")</td>
-                                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
-                                {
+            <td> <span class="label label-default">@e.EventType</span> vs @e.AwayTeamName</td>
 
-                                    <td> <span class="label label-default">@e.EventType</span> vs @e.AwayTeamName</td>
+}
+else
+{
 
-                                }
-                                else
-                                {
+        @if (TwinRinksScheduleParser.TwinRinksScheduleParserUtils.IsPowerSkatingEvent(e))
+{
 
-                                    @if (TwinRinksScheduleParser.TwinRinksScheduleParserUtils.IsPowerSkatingEvent(e))
-                                    {
+        <td>
+            <span class="label label-primary">Power Skating</span> @e.EventType
+        </td>
 
-                                        <td>
-                                            <span class="label label-primary">Power Skating</span> @e.EventType
-                                        </td>
+}
+else
+{
+        <td>@e.EventType</td>
 
-                                    }
-                                    else
-                                    {
-                                        <td>@e.EventType</td>
+}
 
-                                    }
+}
 
-                                }
+                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
+        {
+            @if (e.Rink == TwinRinksScheduleParser.TwinRinksRink.Away)
+    {
+        <td><span class="label label-danger">Away</span> @e.Location </td>
+}
+else
+{
 
-                                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
-                                {
-                                    @if (e.Rink == TwinRinksScheduleParser.TwinRinksRink.Away)
-                                    {
-                                        <td><span class="label label-danger">Away</span> @e.Location </td>
-                                    }
-                                    else
-                                    {
+        <td><span class="label label-success">Home</span> <font color="@e.Rink"> @e.Rink</font></td>
+}
+}
+else
+{
+        <td><font color="@e.Rink"> @e.Rink</font></td>
+}
+                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Practice)
+        {
+            @if (e.HomeTeamName == e.AwayTeamName)
+    {
+        <td>@e.HomeTeamName</td>
+}
+else
+{
 
-                                        <td><span class="label label-success">Home</span> <font color="@e.Rink"> @e.Rink</font></td>
-                                    }
-                                }
-                                else
-                                {
-                                    <td><font color="@e.Rink"> @e.Rink</font></td>
-                                }
-                                @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Practice)
-                                {
-                                    @if (e.HomeTeamName == e.AwayTeamName)
-                                    {
-                                        <td>@e.HomeTeamName</td>
-                                    }
-                                    else
-                                    {
+        <td>@e.HomeTeamName @e.AwayTeamName</td>
+}
+}
+else
+{
+        <td></td>
 
-                                        <td>@e.HomeTeamName @e.AwayTeamName</td>
-                                    }
-                                }
-                                else
-                                {
-                                    <td></td>
+}
+            </tr>
+}
 
-                                }
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-            }
+            </tbody>
+        </table>
+}
         </div>
     </div>
 </form>
