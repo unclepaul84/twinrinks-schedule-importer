@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using DP.TwinRinksScheduleParser;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -6,8 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using DP.TwinRinksScheduleParser;
 using System.Text;
 
 namespace DP.TwinRinksHelperWeb.Services
@@ -18,28 +17,21 @@ namespace DP.TwinRinksHelperWeb.Services
 
         private readonly IMemoryCache _memoryCache;
 
-        private IEnumerable<TwinRinksEvent> Events
-        {
-            get
-            {
-                return _memoryCache.GetOrCreate("Events", (ce) =>
-                {
-                    ce.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
+        private IEnumerable<TwinRinksEvent> Events => _memoryCache.GetOrCreate("Events", (ce) =>
+                                                                    {
+                                                                        ce.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1);
 
-                    var doc = new HtmlDocument();
+                                                                        HtmlDocument doc = new HtmlDocument();
 
-                    doc.Load(new StringReader(DownloadSchedulePageContent()));
+                                                                        doc.Load(new StringReader(DownloadSchedulePageContent()));
 
-                    return doc.ParseTwinRinksEvents().ToArray();
+                                                                        return doc.ParseTwinRinksEvents().ToArray();
 
-                });
-
-            }
-        }
+                                                                    });
 
         public TwinRinksScheduleParserService(IMemoryCache memoryCache)
         {
-            this._memoryCache = memoryCache;
+            _memoryCache = memoryCache;
         }
 
         internal IEnumerable<TwinRinksEventConflict> GetGameConficts(string selectedTeam1, string selectedTeam2)
@@ -51,10 +43,10 @@ namespace DP.TwinRinksHelperWeb.Services
                     if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(selectedTeam2, out TwinRinksTeamLevel level2, out string moniker2))
                     {
 
-                        var games = this.Events.Where(e => e.EventType == TwinRinksEventType.Game).ToArray();
+                        TwinRinksEvent[] games = Events.Where(e => e.EventType == TwinRinksEventType.Game).ToArray();
 
-                        var team1Games = games.FilterTeamEvents(level1, moniker1);
-                        var team2Games = games.FilterTeamEvents(level2, moniker2);
+                        IEnumerable<TwinRinksEvent> team1Games = games.FilterTeamEvents(level1, moniker1);
+                        IEnumerable<TwinRinksEvent> team2Games = games.FilterTeamEvents(level2, moniker2);
 
                         return team1Games.FindConflictsWith(team2Games);
 
@@ -76,14 +68,14 @@ namespace DP.TwinRinksHelperWeb.Services
             {
                 ce.AbsoluteExpiration = DateTimeOffset.Now.AddHours(1);
 
-                var teamMonikers = Events.GetTeamMonikers();
+                IReadOnlyDictionary<TwinRinksTeamLevel, IReadOnlyList<string>> teamMonikers = Events.GetTeamMonikers();
 
                 List<string> res = new List<string>();
 
-                foreach (var kvp in teamMonikers)
+                foreach (KeyValuePair<TwinRinksTeamLevel, IReadOnlyList<string>> kvp in teamMonikers)
                 {
 
-                    foreach (var l in kvp.Value)
+                    foreach (string l in kvp.Value)
                     {
                         res.Add($"{kvp.Key.ToString().ToUpperInvariant()} {l}");
                     }
@@ -91,15 +83,23 @@ namespace DP.TwinRinksHelperWeb.Services
 
                 return res;
 
-            });  
+            });
         }
 
-        internal byte[] GetICalFile(string team)
+        internal byte[] GetICalFile(string team, IEnumerable<DateTime> dates)
         {
             if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(team, out TwinRinksTeamLevel level, out string moniker))
             {
-                var events = Events.FilterTeamEvents(level, moniker);
-                var calValue = events.WriteICalFileString(team);
+                IEnumerable<TwinRinksEvent> events = Events.FilterTeamEvents(level, moniker);
+
+                if (dates != null)
+                {
+                    HashSet<DateTime> dateFilter = new HashSet<DateTime>(dates);
+
+                    events = events.Where(x => dates.Contains(x.EventDate));
+                }
+
+                string calValue = events.WriteICalFileString(team);
 
                 return Encoding.UTF8.GetBytes(calValue);
             }
@@ -108,15 +108,21 @@ namespace DP.TwinRinksHelperWeb.Services
             return null;
         }
 
-        internal byte[] GetTeamSnapScheduleImportFile(string team)
+        internal byte[] GetTeamSnapScheduleImportFile(string team, IEnumerable<DateTime> dates)
         {
             if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(team, out TwinRinksTeamLevel level, out string moniker))
             {
-                var events = Events.FilterTeamEvents(level, moniker);
+                IEnumerable<TwinRinksEvent> events = Events.FilterTeamEvents(level, moniker);
 
+                if (dates != null)
+                {
+                    HashSet<DateTime> dateFilter = new HashSet<DateTime>(dates);
+
+                    events = events.Where(x => dateFilter.Contains(x.EventDate));
+                }
                 StringBuilder sb = new StringBuilder();
 
-                using (var sw = new StringWriter(sb))
+                using (StringWriter sw = new StringWriter(sb))
                 {
                     events.WriteTeamSnapImportFile(sw);
                 }
@@ -128,11 +134,12 @@ namespace DP.TwinRinksHelperWeb.Services
 
         }
 
+
         internal IEnumerable<TwinRinksEvent> GetEvents(string team)
         {
             if (TwinRinksScheduleParserUtils.TryParseTeamLevelAndMoniker(team, out TwinRinksTeamLevel level, out string moniker))
             {
-                return Events.FilterTeamEvents(level, moniker).Where(x=>x.EventDate >= DateTime.Today);
+                return Events.FilterTeamEvents(level, moniker).Where(x => x.EventDate >= DateTime.Today);
             }
 
             return null;

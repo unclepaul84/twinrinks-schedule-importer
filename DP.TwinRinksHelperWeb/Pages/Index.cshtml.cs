@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DP.TwinRinksHelperWeb.Services;
+﻿using DP.TwinRinksHelperWeb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DP.TwinRinksHelperWeb.Pages
 {
@@ -15,7 +14,7 @@ namespace DP.TwinRinksHelperWeb.Pages
 
         public IndexModel(TwinRinksScheduleParserService twinRinksService)
         {
-            this._twinRinksService = twinRinksService;
+            _twinRinksService = twinRinksService;
         }
 
         public SelectList Teams { get; private set; }
@@ -30,27 +29,43 @@ namespace DP.TwinRinksHelperWeb.Pages
         }
 
 
-        public IActionResult OnGetExportTeamSnap(string team)
+        public IActionResult OnGetExportTeamSnap(string team, string dates)
         {
-
-            byte[] file = _twinRinksService.GetTeamSnapScheduleImportFile(team);
+            byte[] file = _twinRinksService.GetTeamSnapScheduleImportFile(team, ParseDatesList(dates));
 
             if (file != null)
-                return this.File(file, "text/csv", $"{team.Replace(" ", "_")}_TeamSnap_Import.csv");
+            {
+                return File(file, "text/csv", $"{team.Replace(" ", "_")}_TeamSnap_Import.csv");
+            }
             else
-                return this.RedirectToPage();
-
+            {
+                return RedirectToPage();
+            }
         }
 
-        public IActionResult OnGetICalFile(string team)
+        private static IEnumerable<DateTime> ParseDatesList(string dates)
         {
-            byte[] file = _twinRinksService.GetICalFile(team);
+            if (!string.IsNullOrWhiteSpace(dates))
+            {
+                return dates.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(x => DateTime.ParseExact(x.Trim(), "yyyy-MM-dd", null));
+            }
+            else
+            {
+                return Enumerable.Empty<DateTime>();
+            }
+        }
+        public IActionResult OnGetICalFile(string team, string dates)
+        {
+            byte[] file = _twinRinksService.GetICalFile(team, ParseDatesList(dates));
 
             if (file != null)
-                return this.File(file, "text/calendar", $"{team.Replace(" ", "_")}.ics");
+            {
+                return File(file, "text/calendar", $"{team.Replace(" ", "_")}.ics");
+            }
             else
-                return this.RedirectToPage(new { SelectedTeam = team });
-
+            {
+                return RedirectToPage(new { SelectedTeam = team });
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace DP.TwinRinksHelperWeb.Controllers
         {
             team = team.Replace("_", " ");
 
-            byte[] file = _twinRinksService.GetICalFile(team);
+            byte[] file = _twinRinksService.GetICalFile(team,null);
 
             if (file != null)
                 return this.File(file, "text/calendar", $"{team.Replace(" ", "_")}.ics");
