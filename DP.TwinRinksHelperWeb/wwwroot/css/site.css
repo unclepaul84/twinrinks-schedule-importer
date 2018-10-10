@@ -8,6 +8,12 @@
   
 }
 
+@media print {
+    .no-print, .no-print * {
+        display: none !important;
+    }
+}
+
 tr:nth-child(odd) {
     background-color: #fff;
 
