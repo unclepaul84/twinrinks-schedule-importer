@@ -72,7 +72,7 @@
                     @foreach (var e in Model.Events)
                     {
                     <tr>
-                        <td><input class="no-print" value="@e.EventDate.ToString("yyyy-MM-dd")" type="checkbox" id="chk-date-select" /></td>
+                        <td><input class="no-print" value="@e.EventDate.ToString("yyyy-MM-dd")" type="checkbox" id="chk-date-select" checked="checked"/></td>
 
                         @if (e.EventType == TwinRinksScheduleParser.TwinRinksEventType.Game)
                         {
